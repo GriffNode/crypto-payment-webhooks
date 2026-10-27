@@ -1,13 +1,13 @@
 import { db } from '../db.js';
 
-const [orderId = '1042', amount = '5', crypto = 'DOGE', product = 'Test order'] = process.argv.slice(2);
+const [orderId = '1042', amount = '5', crypto = 'LTC', product = 'Test order'] = process.argv.slice(2);
 
 const res = await fetch('https://api.griffnode.com/v1/transactions/create', {
   method: 'POST',
   headers: {
     Authorization: `Bearer ${process.env.GRIFFNODE_API_KEY}`,
     'Content-Type': 'application/json',
-    'X-Idempotency-Key': `order-${orderId}`,
+    'X-Idempotency-Key': `order-${orderId}-${crypto}`, // same order + same coin = same payment
   },
   body: JSON.stringify({ crypto, amount: Number(amount), currency_fiat: 'USD', metadata: { order_id: orderId, product } }),
 });
